@@ -16,12 +16,16 @@ namespace Persistence.Repositories
         {
             var typeName = typeof(TEntity).Name; // Product 
             if(!_repositories.ContainsKey(typeName))
-                return (IGenericRepository<TEntity, Tkey>)_repositories[typeName];
+  
+            {
+                var repo = new GenericRepository<TEntity, Tkey>(_storeDbContext);
+                _repositories[typeName] = repo;
+            }
             
-              var repo =   new GenericRepository<TEntity, Tkey>(_storeDbContext);
-            _repositories[typeName] = repo;
+              
 
-            return repo;
+            return (IGenericRepository<TEntity, Tkey>)_repositories[typeName];
+
         }
         
         public  async Task<int> SaveChanges()

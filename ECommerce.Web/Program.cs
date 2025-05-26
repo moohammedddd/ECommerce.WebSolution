@@ -2,6 +2,14 @@ using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Data;
+using Persistence.Repositories;
+using AutoMapper;
+using Services.MappingProfiles;
+using Microsoft.Data.SqlClient;
+using ServiceAbstraction;
+using Services;
+
+
 
 namespace ECommerce.Web
 {
@@ -21,6 +29,9 @@ namespace ECommerce.Web
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddScoped<IDbInitialiizer, DbInitializer>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IServicesManager, ServiceManager>();
+            builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
 
             var app = builder.Build();
 
@@ -34,6 +45,7 @@ namespace ECommerce.Web
                 app.UseSwaggerUI();
             }
 
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
 
            // app.UseAuthorization();

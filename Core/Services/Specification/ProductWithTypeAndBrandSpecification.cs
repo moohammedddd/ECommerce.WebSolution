@@ -26,6 +26,8 @@ namespace Services.Specification
             AddInclude(p => p.ProductBrand);
             AddInclude(p => p.ProductType);
             ApplySorting(productQueryParmeters);
+            ApplyPaging(productQueryParmeters.PageSize, productQueryParmeters.PageIndex);
+
 
         }
 

@@ -30,20 +30,40 @@ namespace Persistence.Repositories
                 query = query.OrderByDescending(specification.OrderByDescending);
             }
 
-            if (specification.Take.HasValue)
-            {
-                query = query.Take(specification.Take.Value);
-            }
+            //if (specification.Take > 0)
+            //{
+            //    query = query.Take(specification.Take);
+            //}
+
             //foreach(var include in specification.IncludeExpression)
             //{
             //    query.Include(include); // p => p.ProdcutBrand
             //}
+            if (!specification.IsPagingEnabled)
+            {
+                if (specification.Skip > 0)
+                {
+                    query = query.Skip(specification.Skip);
+                }
+
+                if (specification.Take > 0)
+                {
+                    query = query.Take(specification.Take);
+                }
+            }
+            else
+            {
+                query = query.Skip(specification.Skip).Take(specification.Take);
+            }
+
             query = specification.IncludeExpression
-                    .Aggregate(query ,(ConcurrentQueue, include)
+                    .Aggregate(query, (ConcurrentQueue, include)
                     => ConcurrentQueue.Include(include));
+           
+
 
             return query;
-
+            
         }   
     }
 }

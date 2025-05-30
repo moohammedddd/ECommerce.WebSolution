@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ServiceAbstraction;
+using Shared;
 using Shared.DataTransferObject.Product;
 using Shared.Enums;
 using System;
@@ -16,7 +17,7 @@ namespace Persistence.Controller
     {
         //Get All Products
         [HttpGet] //BaseUrl/api/Product
-        public async Task <ActionResult<IEnumerable<ProductResponse>>> GetAllProduct([FromQuery]ProductQueryParmeters productQueryParmeters)
+        public async Task <ActionResult<PaginatedResponse<ProductResponse>>> GetAllProduct([FromQuery]ProductQueryParmeters productQueryParmeters)
         {
             var products =  await _servicesManager.ProductServices.GetAllProductAsync(productQueryParmeters);
             return Ok(products);

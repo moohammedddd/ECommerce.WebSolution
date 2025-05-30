@@ -24,8 +24,10 @@ namespace Services.Specification
             IncludeExpression.Add(include);
         }
         public Expression<Func<T, object>> OrderByDescending { get; private set; }
-        public int? Take { get; private set; }
+        public int Take { get; private set; }
         public Expression<Func<T, object>>? OrderBy { get; private set; }
+
+    
         protected void ApplyOrderBy(Expression<Func<T, object>> orderByExpression)
         {
             OrderBy = orderByExpression;
@@ -39,5 +41,20 @@ namespace Services.Specification
         {
             Take = take;
         }
+
+        public int Skip { get; private set; }
+        
+
+        public bool IsPagingEnabled { get; private set; }
+
+        protected void ApplyPaging(int pageSize, int PageIndex)
+        {
+            Skip = (PageIndex -1 ) * PageIndex;
+            Take = pageSize;
+            IsPagingEnabled = true;
+        }
+
+
+
     }
 }

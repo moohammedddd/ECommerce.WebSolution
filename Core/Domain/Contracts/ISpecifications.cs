@@ -23,7 +23,9 @@ namespace Domain.Contracts
         Expression<Func<T, object>>? OrderBy { get; } // For Order Asc
         Expression<Func<T, object>>? OrderByDescending { get; } // For Order Desc
 
-        int? Take { get; }
+        int Take { get; }
+        int Skip { get; }
+        bool IsPagingEnabled { get; } // For Pagination
 
     }
 }

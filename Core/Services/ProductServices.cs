@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
-using Domain.Models;
+using Domain.Exceptions;
+using Domain.Models.Proudcts;
+using Microsoft.VisualBasic;
 using ServiceAbstraction;
 using Services.Specification;
 using Shared;
@@ -36,12 +38,14 @@ namespace Services
             var specs = new  ProductWithTypeAndBrandSpecification(productQueryParmeters);// no filter with id
             var product = await _unitOfWork.GetRepository<Product, int>().GetAllAsync(specs);
             var prodRes =  _mapper.Map<IEnumerable<ProductResponse>>(product);
+            var countspec = new ProductCountSpecifications(productQueryParmeters);
+            var productCount  = await _unitOfWork.GetRepository<Product, int>().CountAsync(countspec); // get the count of the products
             var res = new PaginatedResponse<ProductResponse>()
             {
                 Data = prodRes,
                 PageIndex = productQueryParmeters.PageIndex,
                 PageSize = productQueryParmeters.PageSize,
-                TotalCount = prodRes.Count()
+                TotalCount = productCount
             };
             return res;
 
@@ -60,7 +64,8 @@ namespace Services
         {
 
             var specs = new ProductWithTypeAndBrandSpecification(id);//  filter with id
-            var product = await _unitOfWork.GetRepository<Product, int>().GetByIdAsync(specs);
+            var product = await _unitOfWork.GetRepository<Product, int>().GetByIdAsync(specs) ??
+                throw (new ProductNotFoundException(id));
             var result = _mapper.Map<ProductResponse>(product);
             return result;
         }

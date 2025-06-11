@@ -1,4 +1,4 @@
-﻿using Domain.Models;
+﻿using Domain.Models.Proudcts;
 using Shared.DataTransferObject.Product;
 using Shared.Enums;
 using System;

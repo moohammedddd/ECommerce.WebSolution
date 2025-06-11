@@ -8,6 +8,11 @@ using Services.MappingProfiles;
 using Microsoft.Data.SqlClient;
 using ServiceAbstraction;
 using Services;
+using ECommerce.Web.Middlewares;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Shared.ErrorModels;
+using ECommerce.Web.Factories;
 
 
 
@@ -19,24 +24,31 @@ namespace ECommerce.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            #region Services 
             // Add services to the container.
+            builder.Services.AddWebApplicationServices();
+            builder.Services.AddInfrastructureRegisteration(builder.Configuration);
+            builder.Services.AddApplicationServices();
+         
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-            builder.Services.AddDbContext<StoreDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            #endregion
 
-            builder.Services.AddScoped<IDbInitialiizer, DbInitializer>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IServicesManager, ServiceManager>();
-            builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
 
             var app = builder.Build();
 
-            await InitializeDbAsync(app);
+            await app.InitializeDbAsync();
 
+            #region custom Exception Middelware
+            //app.Use(async (context, next) =>
+            //{
+            //    Console.WriteLine("Process Request");
+            //    await next.Invoke();
+            //    Console.WriteLine("Response");
+            //    Console.WriteLine(context.Response);
+            //}
+            //);
+            app.UseMiddleware<CustomExceptionHandelrMiddlleware>();
+            #endregion
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -48,18 +60,13 @@ namespace ECommerce.Web
             app.UseStaticFiles();
             app.UseHttpsRedirection();
 
-           // app.UseAuthorization();
+            // app.UseAuthorization();
 
 
             app.MapControllers();
 
             app.Run();
         }
-        public static async Task InitializeDbAsync(WebApplication app)
-        {
-            using var scope = app.Services.CreateScope();
-            var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitialiizer>();
-            await dbInitializer.InitialiizeAsync();
-        }
+       
     }
 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ServiceAbstraction
 {
-    public interface IServicesManager
+    public class BasketDto
     {
-        public IProductServices ProductServices { get; }
-        public IBasketService BasketService { get; }
+        public int Id { get; set; }
+        public IEnumerable<BasketItemDto> Items { get; set; } = new List<BasketItemDto>();
     }
 }

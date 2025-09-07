@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Models
+namespace Shared.Enums
 {
-    public class ProductType: BaseEntity<int>
+    public enum ProductSortingOptions
     {
+        NameAsc,
+        NameDesc,
+        PriceAsc,
+        PriceDesc
     }
 }

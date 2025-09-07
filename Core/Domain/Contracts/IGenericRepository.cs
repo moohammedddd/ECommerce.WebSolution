@@ -9,13 +9,18 @@ namespace Domain.Contracts
 {
     public interface IGenericRepository<TEntity, Tkey> where TEntity : BaseEntity<Tkey>
     {
+        Task<int> CountAsync(ISpecifications<TEntity> specifications);
         void Add(TEntity entity);
 
         void Update(TEntity entity);
         void Delete(TEntity entity);
 
-        Task <TEntity> GetByIdAsync(Tkey id);
+        Task <TEntity?> GetByIdAsync(Tkey id);
 
         Task<IEnumerable<TEntity>> GetAllAsync();
+
+        Task<TEntity?> GetByIdAsync(ISpecifications<TEntity> specifications);
+
+        Task<IEnumerable<TEntity>> GetAllAsync(ISpecifications<TEntity> specifications);
     }
 }
